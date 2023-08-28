@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  server:
+    image: nginx:stable
+    # build: .
+    volumes:
+      - ./html:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/conf.d/nginx-server.conf
+      - ./ssl/ssl.conf:/etc/nginx/conf.d/ssl.conf
+      # 以下を追記
+      - ./etc/letsencrypt:/etc/letsencrypt
+      - ./var/www/html:/var/www/html
+    ports:
+      - 9080:80
+      - 443:443
+    tty: true
+  
+### certbot ################################################
+  certbot:
+    image: certbot/certbot:v1.7.0
+    volumes:
+      - ./etc/letsencrypt:/etc/letsencrypt
+      - ./var/www/html:/var/www/html
+    command: ["--version"]
+        

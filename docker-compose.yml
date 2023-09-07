@@ -3,11 +3,12 @@ version: '3'
 services:
   server:
     image: nginx:stable
-    # build: .
+    build: .
     volumes:
       - ./html:/usr/share/nginx/html
       - ./nginx.conf:/etc/nginx/conf.d/nginx-server.conf
-      - ./ssl/ssl.conf:/etc/nginx/conf.d/ssl.conf
+      # - ./ssl/ssl.conf:/etc/nginx/conf.d/ssl.conf
+      - ./resolv.conf:/etc/resolv.conf
       # 以下を追記
       - ./etc/letsencrypt:/etc/letsencrypt
       - ./var/www/html:/var/www/html
@@ -15,7 +16,13 @@ services:
       - 9080:80
       - 443:443
     tty: true
-  
+    networks:
+      fixed_compose_network:
+        ipv4_address: 192.168.128.2
+    extra_hosts:
+      - "my-server.wade:192.168.128.2"
+    dns: 192.168.128.2
+
 ### certbot ################################################
   certbot:
     image: certbot/certbot:v1.7.0
@@ -24,3 +31,9 @@ services:
       - ./var/www/html:/var/www/html
     command: ["--version"]
         
+networks:
+  fixed_compose_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.128.0/24

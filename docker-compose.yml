@@ -6,21 +6,22 @@ services:
     build: .
     volumes:
       - ./html:/usr/share/nginx/html
-      - ./nginx.conf:/etc/nginx/conf.d/nginx-server.conf
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./proxy.conf:/etc/nginx/conf.d/proxy.conf
       # - ./ssl/ssl.conf:/etc/nginx/conf.d/ssl.conf
       - ./resolv.conf:/etc/resolv.conf
       # 以下を追記
       - ./etc/letsencrypt:/etc/letsencrypt
       - ./var/www/html:/var/www/html
-    ports:
-      - 9080:80
-      - 443:443
+    # ports:
+    #   - "80:80"
+    #   - "443:443"
     tty: true
     networks:
       fixed_compose_network:
         ipv4_address: 192.168.128.2
-    extra_hosts:
-      - "my-server.wade:192.168.128.2"
+    # extra_hosts:
+    #   - "my-server.wade:192.168.128.2"
     dns: 192.168.128.2
 
 ### certbot ################################################
